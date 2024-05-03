@@ -1,0 +1,61 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: "v4.4.0"
+    hooks:
+      - id: check-json
+      - id: check-yaml
+      - id: check-toml
+      - id: end-of-file-fixer
+        exclude: '(^tests/)'
+      - id: trailing-whitespace
+        exclude: '(^tests/)'
+  - repo: https://github.com/psf/black
+    rev: "24.4.2"
+    hooks:
+      - id: black
+        files: '(^dsflow/|^tests/)'
+        exclude: '(dsflow/vendor)'
+  - repo: https://github.com/PyCQA/isort
+    rev: "5.13.2"
+    hooks:
+      - id: isort
+        additional_dependencies: [".[colors]"]
+        files: '(^dsflow/|^tests/)'
+        exclude: '(dsflow/vendor)'
+  - repo: https://github.com/PyCQA/flake8
+    rev: "7.0.0"
+    hooks:
+      - id: flake8
+        additional_dependencies: ["Flake8-pyproject<2.0"]
+        files: '(^dsflow/|^tests/)'
+        exclude: '(dsflow/vendor)'
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: "v1.10.0"
+    hooks:
+      - id: mypy
+        additional_dependencies: ['types-Deprecated']
+        files: '(^flowchart_explorer/)'
+        #exclude: '(flowchart_explorer/..)'
+#  - repo: https://github.com/PyCQA/pydocstyle
+#    rev: "6.3.0"
+#    hooks:
+#      - id: pydocstyle
+#        files: '(^flowchart_explorer/)'
+#        args:
+#          - --ignore=D100, D203, D212, D400, D401, D403, D415
+#          - --ignore-decorators=property
+#        exclude: '(r)'
+  # - repo: https://github.com/kynan/nbstripout
+  #   rev: 0.6.1
+  #   hooks:
+  #     # Jupyter Notebookの出力をクリアする
+  #     - id: nbstripout
+  - repo: local
+    hooks:
+      - id: poetry-check
+        name: poetry-check
+        description: pyproject.tomlの書式をチェックする
+        entry: poetry check
+        language: system
+        pass_filenames: false
+        files: ^pyproject.toml$

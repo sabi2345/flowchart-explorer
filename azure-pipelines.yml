@@ -1,0 +1,122 @@
+# Python package
+# Create and test a Python package on multiple Python versions.
+# Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/python
+
+trigger:
+  - main
+  - develop
+
+pool:
+  vmImage: 'ubuntu-22.04'
+
+variables:
+  POETRY_VIRTUALENVS_IN_PROJECT: 'true' # Create a virtualenv in project
+
+jobs:
+  - job: lint
+    displayName: Lint
+    steps:
+      - task: Cache@2
+        inputs:
+          key: '"poetry" | "$(Agent.OS)" | "3.10" | poetry.lock'
+          path: '.venv'
+          restoreKeys: '"poetry" | "$(Agent.OS)" | "3.10"'
+        displayName: Cache poetry package on 3.10 in $(Agent.OS)
+      - template: ./.azure-pipelines/steps/use-poetry.yml
+      - script: make lint
+        displayName: Lint
+  - job: test
+    displayName: Test package
+    strategy:
+      matrix:
+        linux-py39:
+          IMAGE: 'ubuntu-20.04'
+          PYTHON_VERSION: '3.9'
+          TOX_ENV: py39
+        linux-py310:
+          IMAGE: 'ubuntu-20.04'
+          PYTHON_VERSION: '3.10'
+          TOX_ENV: py310
+        linux-py310-minimum:
+          IMAGE: 'ubuntu-20.04'
+          PYTHON_VERSION: '3.10'
+          TOX_ENV: py310-minimum
+        linux-py311:
+          IMAGE: 'ubuntu-20.04'
+          PYTHON_VERSION: '3.11'
+          TOX_ENV: py311
+    pool:
+      vmImage: $(IMAGE)
+    steps:
+      - task: Cache@2
+        inputs:
+          key: '"tox" | "$(Agent.OS)" | "$(TOX_ENV)" | poetry.lock | tox.ini'
+          path: '.tox'
+          restoreKeys: |
+            "tox" | "$(Agent.OS)" | "$(TOX_ENV)" | poetry.lock
+            "tox" | "$(Agent.OS)" | "$(TOX_ENV)"
+        displayName: Cache tox environments on $(TOX_ENV) in $(Agent.OS)
+      - template: ./.azure-pipelines/steps/use-poetry.yml
+        parameters:
+          pythonVersionSpec: '$(PYTHON_VERSION)'
+          installOptions: --only dev
+      - bash: make tox
+        displayName: Test by tox
+        env:
+          TOX_FLAGS: '--skip-missing-interpreters false'
+          ADDITIONAL_POETRY_OPTS: '--only ci'
+          # {envname} is replaced by tox.
+          ADDITIONAL_PYTEST_OPTS: '--test-run-title="$(Agent.OS)-{envname}" --no-coverage-upload'
+      - task: PublishCodeCoverageResults@1
+        displayName: Publish coverage results
+        inputs:
+          codeCoverageTool: Cobertura
+          summaryFileLocation: coverage.xml
+      - bash: rm -rf ~/.cache/pypoetry/cache/
+        displayName: Clear poetry cache
+  - job: docs
+    variables:
+      - group: dsflow_docs_library  # グループはAPP_ID/APP_SECRETを含む
+      - name: SHAREPOINT_URL
+        value: https://hitachigroup.sharepoint.com/sites/tker_public/
+    steps:
+      - script: |
+          # プルリクエストの場合PR番号、developブランチの場合は"latest"、それ以外はブランチ名を使う
+          if [[ "$BUILD_REASON" = "PullRequest" ]]; then
+            echo "##vso[task.setvariable variable=DOCS_FOLDER]pr${SYSTEM_PULLREQUEST_PULLREQUESTID}"
+          elif [[ "$BUILD_SOURCEBRANCHNAME" = "develop" ]]; then
+            echo "##vso[task.setvariable variable=DOCS_FOLDER]latest"
+          else
+            echo "##vso[task.setvariable variable=DOCS_FOLDER]${BUILD_SOURCEBRANCHNAME}"
+          fi
+        displayName: Select a document folder
+      - template: ./.azure-pipelines/steps/use-poetry.yml
+      - script: make apidoc build-aspx
+        displayName: Build documents for SharePoint
+        env:
+          DOCUMENT_ROOT: $(SHAREPOINT_URL)dsflow_docs/dsflow/$(DOCS_FOLDER)
+      - publish: docs/_build/html
+        artifact: aspx
+      - template: ./.azure-pipelines/steps/upload-docs.yml
+        parameters:
+          sharepointUrl: $(SHAREPOINT_URL)
+          sharepointFolder: dsflow_docs/dsflow/$(DOCS_FOLDER)
+          documentPath: docs/_build/html
+          appClientId: $(APP_ID)
+          appClientSecret: $(APP_SECRET)
+      - script: |
+          cat > "${BUILD_SOURCESDIRECTORY}/summary.md" <<EOF
+          ## ドキュメント
+
+          - アップロードURL: <$(SHAREPOINT_URL)dsflow_docs/dsflow/$(DOCS_FOLDER)/index.aspx>
+          EOF
+          echo "##vso[task.uploadsummary]${BUILD_SOURCESDIRECTORY}/summary.md"
+        displayName: Upload summary
+  - job: build
+    steps:
+      - template: ./.azure-pipelines/steps/use-poetry.yml
+        parameters:
+          installDependencies: false
+      - script: poetry build
+        displayName: Build package
