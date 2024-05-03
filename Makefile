@@ -78,7 +78,7 @@ build-aspx: build-docs ## Sphinxでドキュメントをビルドする（ShareP
 	@sed -i 's@\.html@.aspx@g' ./docs/_build/html/_static/scripts/pydata-sphinx-theme.js
 
 project_version := $(shell sed -n '/^version/ s@version\s*=\s*"\([.0-9a-zA-Z_-]*\)".*@\1@ p' pyproject.toml)
-version_files := pyproject.toml dsflow/__init__.py
+version_files := pyproject.toml flowchart_explorer/__init__.py
 update-version: ## プロジェクトのバージョンをアップデートする。新しいバージョンとしてNEW_VERSION変数を指定すること。
 	$(if $(NEW_VERSION),,$(error "NEW_VERSION"変数を設定してください（例: `make NEW_VERSION=0.1.2 update-version`）))
 	@echo $(version_files) | xargs sed -i 's@$(project_version)@$(NEW_VERSION)@g'
