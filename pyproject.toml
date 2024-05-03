@@ -79,9 +79,6 @@ exclude_lines = [
 ]
 ignore_errors = true
 
-[tool.poetry.scripts]
-lint = "pre-commit run --all-files"
-
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
