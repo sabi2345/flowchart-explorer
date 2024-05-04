@@ -1,4 +1,4 @@
-name: Lint Check
+name: Lint Check & Pytest
 
 on:
   pull_request:
@@ -46,3 +46,6 @@ jobs:
 
     - name: Run lint
       run: make lint
+
+    - name: Run Test
+      run: make test

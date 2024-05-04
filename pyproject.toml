@@ -13,6 +13,7 @@ include = ["CHANGELOG.md"]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.12"
+diagrams = "^0.23.4"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -35,7 +36,7 @@ pytest-azurepipelines = "^1.0.4"
 
 [tool.pytest.ini_options]
 testpaths = ['tests']
-addopts = '--cov --cov-report=term --cov-report=xml --cov-report=html'
+addopts = '--cov --cov-config=.coveragerc --cov-report=term --cov-report=xml --cov-report=html'
 log_cli = false  # ログを有効にしたい場合は true にします
 log_cli_level = 'DEBUG'
 log_cli_format = "message:%(message)s"
