@@ -51,4 +51,15 @@ class OutLoop(Node):
                  "fontname": "MS UI Gothic", "height": "0.75",
                  "xlabel": f"loopid={loop_id}",
                  "color": "darkgray"}
-        super().__init__(label=label, nodeid=None, **attrs)
+        super().__init__(label="out-loop", nodeid=None, **attrs)
+
+
+class ExitLoop(Node):
+    def __init__(self, loop_id: str, label: str = ""):
+
+        attrs = {"shape": "ellipse", "style": "filled",
+                 "fixedsize": "false", "fillcolor": "lightskyblue",
+                 "fontcolor": "black", "labelloc": "c",
+                 "xlabel": f"loopid={loop_id}",
+                 "fontname": "MS UI Gothic", "color": "darkgray"}
+        super().__init__(label="exit-loop", nodeid=None, **attrs)
