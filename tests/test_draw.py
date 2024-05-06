@@ -12,10 +12,10 @@ class TestDrawFlowPath:
         graph = drawio.get_graph()
         explorer = Explorer()
         key, flow_path = explorer.run(graph)
-        for key in graph["nodes"].keys():
-            print(graph["nodes"][key]["label"])
+        # for key in graph["nodes"].keys():
+        #     print(graph["nodes"][key]["label"])
         dir_path = Path(tmp_path)
-        dir_path = Path("tests/chart_path/simple_double_loop_chart")
+        # dir_path = Path("tests/chart_path/simple_double_loop_chart")
         drawpath = FlowChartPath(dir_path=dir_path)
         drawpath.draw(flow_path=flow_path, graph=graph)
         # Check if the files are created
