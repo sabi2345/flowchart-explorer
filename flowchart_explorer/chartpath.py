@@ -4,7 +4,8 @@ import shutil
 from flowchart_explorer.methods import get_logger
 
 from diagrams import Diagram, Edge
-from flowchart_explorer.flowchartdiagrams.nodes import StartEnd, InLoop, OutLoop, ExitLoop, Action
+from flowchart_explorer.flowchartdiagrams.nodes import (
+    StartEnd, InLoop, OutLoop, ExitLoop, Action, Decision)
 
 logger = get_logger(__name__)
 
@@ -41,7 +42,8 @@ class FlowChartPath:
                             next_node = OutLoop(loop_id=node["loop-id"])
                         elif node["node-type"] == "exit-loop":
                             next_node = ExitLoop(loop_id=node["loop-id"])
-
+                        elif node["node-type"] == "decision":
+                            next_node = Decision(node["label"])
                         else:  # Action
                             next_node = Action(node["label"])
                     pre_node.connect(next_node, Edge(forward=True))

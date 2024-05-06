@@ -100,6 +100,13 @@ class Drawio(object):
                                 'label': label,
                                 'additional-details': node['additional-details']
                                 }
+
+        # decision
+        elif style.startswith('rhombus;'):
+            graph_nodes[key] = {'node-type': 'decision',
+                                'label': label,
+                                'additional-details': node['additional-details']
+                                }
         # normal(Cases other than the above)
         else:
             graph_nodes[key] = {'node-type': 'normal',
