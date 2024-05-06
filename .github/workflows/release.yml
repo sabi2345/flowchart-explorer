@@ -60,3 +60,19 @@ jobs:
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
+
+    - name: Get the version
+      id: get_version
+      run: echo "::set-output name=version::$(poetry version | awk '{print $2}')"
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.get_version.outputs.version }}
+        release_name: Release ${{ steps.get_version.outputs.version }}
+        body: |
+          Changes in this Release
+          - Add the link to the PyPI package: https://pypi.org/project/flowchart-explorer/${{ steps.get_version.outputs.version }}
