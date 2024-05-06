@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 from flowchart_explorer.chartpath import FlowChartPath
@@ -22,5 +21,3 @@ class TestDrawFlowPath:
         # Check if the files are created
         for i in range(1, 20):
             assert (dir_path / f"FlowChart-{i}.png").exists(), f"FlowChart-{i}.png does not exist"
-
-

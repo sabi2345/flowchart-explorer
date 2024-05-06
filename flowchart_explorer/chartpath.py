@@ -50,7 +50,3 @@ class FlowChartPath:
         os.makedirs(self.dir_path, exist_ok=True)
         for key in keys:
             shutil.move(f"{self.name}-{key}.{self.out_format}", self.dir_path)
-
-
-
-
