@@ -51,6 +51,18 @@ class Drawio(object):
 
     def _transform_node(self, key: str, node: dict, graph_nodes: dict,
                         loops: dict, loop_check: dict) -> Tuple[dict, dict, dict]:
+
+        # get label
+        if 'value' in node['additional-details']:
+            label = node['additional-details']['value']
+        elif 'label' in node['additional-details']:
+            label = node['additional-details']['label']
+        else:
+            label = ""
+        # replace <br> to \n
+        label = label.replace("<br>", "\n")
+
+
         style = node['additional-details']['style']
         # in-loop
         if (style.startswith('shape=loopLimit;') and
@@ -63,6 +75,7 @@ class Drawio(object):
             graph_nodes[key] = {'node-type': 'in-loop',
                                 'loop-id': node['additional-details']['in-loop'],
                                 'max-loop': max_loop,
+                                'label': label,
                                 'additional-details': node['additional-details']
                                 }
             loop_check = self._add_value_to_list(loop_check, node['additional-details']['in-loop'], 'in-loop')
@@ -73,6 +86,7 @@ class Drawio(object):
               "out-loop" in node['additional-details'].keys()):
             graph_nodes[key] = {'node-type': 'out-loop',
                                 'loop-id': node['additional-details']['out-loop'],
+                                'label': label,
                                 'additional-details': node['additional-details']
                                 }
             loop_check = self._add_value_to_list(loop_check, node['additional-details']['out-loop'], 'out-loop')
@@ -83,11 +97,13 @@ class Drawio(object):
               "exit-loop" in node['additional-details'].keys()):
             graph_nodes[key] = {'node-type': 'exit-loop',
                                 'loop-id': node['additional-details']['exit-loop'],
+                                'label': label,
                                 'additional-details': node['additional-details']
                                 }
         # normal(Cases other than the above)
         else:
             graph_nodes[key] = {'node-type': 'normal',
+                                'label': label,
                                 'additional-details': node['additional-details']
                                 }
 
