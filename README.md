@@ -55,7 +55,7 @@ def main():
 
 #### Start Node
 
-<img src="./assets/image-20240512143434668.png" alt="image-20240512143434668" style="zoom:50%;" />
+<img src="./assets/image-20240512143434668.png" alt="image-20240512143434668" width="50%" />
 
 - The "Start Node" should be created as an <u>Ellipse or Circle</u>, and should only be the source of Edges.
 - Again, there should be only one Start Node in the flowchart.
