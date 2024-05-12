@@ -58,13 +58,13 @@ def main():
 - The "Start Node" should be created as an <u>Ellipse or Circle</u>, and should only be the source of Edges.
 - Again, there should be only one Start Node in the flowchart.
 
-#### Loop 
+#### Loop
 
-Please enclose loop processes like `while` and `for` statements with a set of ***"In Loop"*** and **"*Out Loop*"** . Also, these nodes need to have properties set for handling multiple loops. Please refer to the example in `charts/example_chart.drawio`. 
+Please enclose loop processes like `while` and `for` statements with a set of ***"In Loop"*** and **"*Out Loop*"** . Also, these nodes need to have properties set for handling multiple loops. Please refer to the example in `charts/example_chart.drawio`.
 
 ##### In Loop(Loop Limit)
 
-Represents the starting point of the loop process. 
+Represents the starting point of the loop process.
 
 <img src="./assets/image-20240512150727067.png" alt="image-20240512150727067"/>
 
@@ -95,7 +95,7 @@ If you need to `break` from the loop process due to a status or other condition 
 
 ###### Properties
 
-- `exit-loop` (required): This is the id name to identify the loop you want to exit. Please set it as an integer value. 
+- `exit-loop` (required): This is the id name to identify the loop you want to exit. Please set it as an integer value.
 
 ### **Supplementary Notes**
 
@@ -109,11 +109,10 @@ Right-click on the node → Edit Data
 
 <img src="./assets/image-20240512145158061.png" alt="image-20240512145158061" />
 
-2. Input those properties  →  Add Property  →  Input value 
+2. Input those properties  →  Add Property  →  Input value
 
 <img src="./assets/image-20240512145452408.png" alt="image-20240512145452408" />
 
 3. Click Apply
 
 <img src="./assets/image-20240512145653862.png" alt="image-20240512145653862" />
-
